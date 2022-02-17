@@ -11,5 +11,6 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	I2P.Unpack(*dir)
 }
