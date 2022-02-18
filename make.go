@@ -9,11 +9,12 @@ import (
 	"runtime"
 
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
 //go:generate ./touch/touch
-//go:generate go run ./I2P -generate=true
-//go:generate go build -o go-I2P-jpackage ./I2P
+//go:generate go run ./I2P -generate=true -dir=$GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/
+//go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage ./I2P
 
 func Generate(dir string) error {
 	if err := gitCloneI2PFirefox(dir); err != nil {
@@ -34,8 +35,10 @@ func Generate(dir string) error {
 func gitCloneI2PFirefox(dir string) error {
 	dir = filepath.Join(dir, "i2p.firefox")
 	_, err := git.PlainClone(dir, false, &git.CloneOptions{
-		URL:      "https://i2pgit.org/i2p-hackers/i2p.firefox",
-		Progress: os.Stdout,
+		URL:           "https://i2pgit.org/i2p-hackers/i2p.firefox",
+		Progress:      os.Stdout,
+		SingleBranch:  true,
+		ReferenceName: plumbing.NewBranchReferenceName("settable-paths"),
 	})
 	if err != nil {
 		log.Printf("gitCloneI2PFirefox: git.PlainClone failed: %s", err.Error())

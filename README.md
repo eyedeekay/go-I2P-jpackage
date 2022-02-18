@@ -59,3 +59,8 @@ As long as you also show people how to set up a signed newsfeed?
 And you trust them to like, actually release updates in a timely and secure manner?
 
 ... It might even be a good idea.
+
+# The Big TODO:
+
+How to host a secure, signed newsfeed to provide updates for your app which embeds I2P?
+Because that's what this does, at least, in a perfect world.
