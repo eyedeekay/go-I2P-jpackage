@@ -14,7 +14,7 @@ import (
 
 //go:generate ./touch/touch
 //go:generate go run ./I2P -generate=true -dir=$GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/
-//go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage ./I2P
+//go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/I2P
 
 func Generate(dir string) error {
 	if err := gitCloneI2PFirefox(dir); err != nil {
