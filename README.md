@@ -1,7 +1,11 @@
 # go-I2P-jpackage
 
-Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps. It
-is impossible to use except with a specific branch of i2p.firefox, which allows overriding
+Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps. 
+
+
+**UNBELIEVABLY Experimental and probably totally unsuitable for use.**
+
+It is impossible to use except with a specific branch of i2p.firefox, which allows overriding
 the install and configuration path of the jpackaged I2P router. It is intended as part of a
 "portable" in the sense that the installation is self-contained to a directory and includes
 all the software which is required to adequately make use of it. Want to build an I2P-Based
@@ -21,7 +25,7 @@ go generate
 ```
 /
 instead of go build. That's because it plays some tricks on Go to generate a jpackaged
-router to embed as part of being `import`ed.
+router to embed as part of being `import`ed/.
 
 In order to use this *as a library*, you will need
 Java 14+(17 recommended), bash, Go and Git installed. The binary produced by importing the
