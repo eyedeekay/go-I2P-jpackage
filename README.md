@@ -26,7 +26,7 @@ To produce the executable, run:
 ```sh
 go generate
 ```
-/
+
 instead of go build. That's because it plays some tricks on Go to generate a jpackaged
 router to embed as part of being `import`ed/.
 
