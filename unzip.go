@@ -5,71 +5,67 @@ import (
 	"compress/gzip"
 	"embed"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/walle/targz"
 )
 
 //go:embed build.I2P.tar.gz
 var Content embed.FS
 
-func Unpack(dir string) {
+func Unpack(dir string) error {
 	//untar build.I2P.tar.gz to a directory specified by -dir
 	flag.Parse()
 	iname := "build.I2P.tar.gz"
 	fname := "jpackage.I2P.tar.gz"
-	tfname := "jpackage.I2P.tar"
 	dir, err := filepath.Abs(dir)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Unpack: Abs() failed: %s", err.Error())
 	}
 	os.MkdirAll(dir, 0755)
 	fpath := filepath.Join(dir, fname)
-	tfpath := filepath.Join(dir, tfname)
+	//tfpath := filepath.Join(dir, tfname)
 	ufpath := filepath.Join(dir, "I2P")
 	log.Println("Unpacking", fpath, "to", ufpath)
 	file, err := Content.Open(iname)
 	if err != nil {
-		log.Fatal("main: Open() failed: ", err.Error())
+		return fmt.Errorf("Unpack: Open() failed: %s", err.Error())
 	}
 	defer file.Close()
 	// read the file into a byte slice
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Fatal("main: ReadAll() failed: ", err.Error())
+		return fmt.Errorf("Unpack: ReadAll() failed: %s", err.Error())
 	}
 	err = ioutil.WriteFile(fpath, data, 0644)
 	if err != nil {
-		log.Fatal("main: Write() failed: ", err.Error())
+		return fmt.Errorf("Unpack: Write() failed: %s", err.Error())
 	}
-	log.Println("Unpacking", fpath, "to", tfpath)
-	err = UnGzip(fpath, tfpath)
+	err = UnTarGzip(fpath, ufpath)
 	if err != nil {
-		log.Fatal("main: UnGzip() failed: ", err.Error())
-	}
-	log.Println("Unpacking", tfpath, "to", ufpath)
-	err = Untar(tfpath, ufpath)
-	if err != nil {
-		log.Fatal("main: Untar() failed: ", err.Error())
+		return fmt.Errorf("Unpack: UnTarGzip() failed: %s", err.Error())
 	}
 	log.Println("Removing", fpath)
 	err = os.Remove(fpath)
 	if err != nil {
-		log.Fatal("main: Remove() failed: ", err.Error())
+		return fmt.Errorf("Unpack: Remove() failed: %s", err.Error())
 	}
-	log.Println("Removing", tfpath)
-	err = os.Remove(tfpath)
-	if err != nil {
-		log.Fatal("main: Remove() failed: ", err.Error())
-	}
+	return nil
+}
+
+func UnTarGzip(source, target string) error {
+	return targz.Extract(source, target)
 }
 
 func Untar(tarball, target string) error {
 	reader, err := os.Open(tarball)
 	if err != nil {
-		return err
+		return fmt.Errorf("Untar: Open() failed %s", err.Error())
 	}
 	defer reader.Close()
 	tarReader := tar.NewReader(reader)
@@ -79,14 +75,14 @@ func Untar(tarball, target string) error {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return err
+			return fmt.Errorf("Untar: Next() failed %s", err.Error())
 		}
 
 		path := filepath.Join(target, header.Name)
 		info := header.FileInfo()
 		if info.IsDir() {
 			if err = os.MkdirAll(path, info.Mode()); err != nil {
-				return err
+				return fmt.Errorf("Untar: MkdirAll failed %s", err.Error())
 			}
 			continue
 		}
@@ -100,7 +96,7 @@ func Untar(tarball, target string) error {
 		defer file.Close()
 		_, err = io.Copy(file, tarReader)
 		if err != nil {
-			return err
+			return fmt.Errorf("Untar: Copy() failed%s", err.Error())
 		}
 	}
 	return nil
@@ -109,23 +105,23 @@ func Untar(tarball, target string) error {
 func UnGzip(source, target string) error {
 	reader, err := os.Open(source)
 	if err != nil {
-		return err
+		return fmt.Errorf("UnGzip: Open() failed %s", err.Error())
 	}
 	defer reader.Close()
 
 	archive, err := gzip.NewReader(reader)
 	if err != nil {
-		return err
+		return fmt.Errorf("UnGzip: NewReader() failed %s", err.Error())
 	}
 	defer archive.Close()
 
 	target = filepath.Join(target, archive.Name)
 	writer, err := os.Create(target)
 	if err != nil {
-		return err
+		return fmt.Errorf("UnGzip: Create() failed%s", err.Error())
 	}
 	defer writer.Close()
 
 	_, err = io.Copy(writer, archive)
-	return err
+	return fmt.Errorf("UnGzip: Copy() failed %s", err.Error())
 }

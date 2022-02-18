@@ -1,39 +1,79 @@
 package I2P
 
-//go:generate rm -rf i2p.firefox
-//go:generate git clone https://i2pgit.org/i2p-hackers/i2p.firefox
-//go:generate ./i2p.firefox/build.sh
-//go:generate make -C i2p.firefox
-//go:generate tar -C i2p.firefox/build/I2P -czf build.I2P.tar.gz
+import (
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
 
-/* Express this Makefile segment with Go Generate.
-jpackage: i2p.firefox i2p.firefox/I2P i2p.firefox/build/I2P build.I2P.tar.gz
-	go build -o go-I2P-jpackage ./I2P
+	"gopkg.in/src-d/go-git.v4"
+)
 
-i2p.firefox:
-	git clone https://i2pgit.org/i2p-hackers/i2p.firefox
+//go:generate go run ./I2P -generate=true
+//go:generate go run ./I2P -generate=true
+//go:generate go build -o go-I2P-jpackage
 
-i2p.firefox/I2P:
-	cd i2p.firefox && \
-		./build.sh
-
-i2p.firefox/build/I2P:
-	cd i2p.firefox && \
-		make
-
-build.I2P.tar.gz:
-	cd i2p.firefox/build/I2P && \
-		tar -czvf ../../../build.I2P.tar.gz .
-*/
-
-/*func gitCloneI2PFirefox(dir string) {
-	//git clone https://i2pgit.org/i2p-hackers/i2p.firefox
+func Generate(dir string) error {
+	if err := gitCloneI2PFirefox(dir); err != nil {
+		return fmt.Errorf("generate: gitCloneI2PFirefox failed %ss", err.Error())
+	}
+	if err := runI2PFirefoxBuildSh(dir); err != nil {
+		return fmt.Errorf("generate: runI2PFirefoxBuildSh failed %s", err.Error())
+	}
+	if err := runI2PFirefoxMake(dir); err != nil {
+		return fmt.Errorf("generate: runI2PFirefoxMake failed %s", err.Error())
+	}
+	if err := tarI2PdotFirefoxdotBuild(dir); err != nil {
+		return fmt.Errorf("generate: tarI2PdotFirefoxdotBuild failed %s", err.Error())
+	}
+	return nil
 }
 
-func runI2PFirefoxBuildSh(dir string) {
-	//cd i2p.firefox && ./build.sh
+func gitCloneI2PFirefox(dir string) error {
+	dir = filepath.Join(dir, "i2p.firefox")
+	_, err := git.PlainClone(dir, false, &git.CloneOptions{
+		URL:      "https://i2pgit.org/i2p-hackers/i2p.firefox",
+		Progress: os.Stdout,
+	})
+	if err != nil {
+		log.Printf("gitCloneI2PFirefox: git.PlainClone failed: %s", err.Error())
+	}
+	return nil
 }
 
-func runI2PFirefoxMake(dir string) {
-	//cd i2p.firefox && make
-}*/
+func runI2PFirefoxBuildSh(dir string) error {
+	dir = filepath.Join(dir, "i2p.firefox")
+	fmt.Println("Running build.sh")
+	cmd := exec.Command(filepath.Join(dir, "build.sh"))
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func runI2PFirefoxMake(dir string) error {
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Println("Running wsl make")
+		cmd := exec.Command("wsl", "make", "-C", filepath.Join(dir, "i2p.firefox"))
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	default:
+		fmt.Println("Running make")
+		cmd := exec.Command("make", "-C", filepath.Join(dir, "i2p.firefox"))
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	}
+}
+
+func tarI2PdotFirefoxdotBuild(dir string) error {
+	os.Remove(filepath.Join(dir, "build.I2P.tar.gz"))
+	err := TarGzip(filepath.Join(dir, "i2p.firefox", "build", "I2P"), filepath.Join(dir, "build.I2P.tar.gz"))
+	if err != nil {
+		return fmt.Errorf("tarI2PdotFirefoxdotBuild: Tar failed: %s", err.Error())
+	}
+	return nil
+}
