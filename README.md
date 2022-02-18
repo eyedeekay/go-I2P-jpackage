@@ -15,8 +15,11 @@ way. If you're brave. Or an idiot. I don't know.
 The executable produced by this is a standalone binary that can be built for any platform,
 but it does not support cross-compilation. It is designed to be `go get` able and `import`
 able on any platform supported by Java 17 an Jpackage, but it **REQUIRES** all the same
-build dependencies as `i2p.firefox`. If it turns out to be a non-stupid idea, then I will
-cut those build dependencies down to just `bash`.
+build dependencies as `i2p.firefox`. `i2p.firefox` uses `make` for a lot of stuff which
+is obnoxious to use on Windows and totally my fault, and also totally unnecessary. If it 
+turns out to be a non-stupid idea, then I will cut those build dependencies down to just
+`bash`. Because I literally cannot imagine the person who does Go development on Windows
+without at least `git bash` and if I met them, I would probably not like them.
 
 To produce the executable, run:
 
