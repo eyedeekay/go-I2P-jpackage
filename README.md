@@ -1,6 +1,10 @@
 # go-I2P-jpackage
 
-Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps.
+Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps. Should
+maybe work on Linux and Windows. OSX users should look to Zlatinb's Easy-Install DMG. Most
+Windows users should probably refer to the Windows Easy-Install Bundle. Go developers who
+are especially fond of Java I2P and who are building I2P apps might find something to offer
+here.
 
 **UNBELIEVABLY Experimental and probably totally unsuitable for use.**
 
@@ -27,11 +31,19 @@ go generate
 ```
 
 instead of go build. That's because it plays some tricks on Go to generate a jpackaged
-router to embed as part of being `import`ed/.
+router while being built.
 
-In order to use this *as a library*, you will need
-Java 14+(17 recommended), bash, Go and Git installed. The binary produced by importing the
-library will work **only** upon the platform that it is built on.
+In order to use this *as a library*, you will need Java 14+(17 recommended), bash, Go
+and Git installed. The binary produced by importing the library will work **only** upon
+the platform that it is built on. You should clone it into your GOPATH:
+
+`git clone https://github.com/eyedeekay/go-I2P-jpackage $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage`
+
+then generate the code for your platform locally:
+
+```bash
+cd $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage
+```
 
 ## Why? In god's name why would I waste my time on some bullshit like this?
 
