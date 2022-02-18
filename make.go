@@ -11,9 +11,9 @@ import (
 	"gopkg.in/src-d/go-git.v4"
 )
 
+//go:generate ./touch/touch
 //go:generate go run ./I2P -generate=true
-//go:generate go run ./I2P -generate=true
-//go:generate go build -o go-I2P-jpackage
+//go:generate go build -o go-I2P-jpackage ./I2P
 
 func Generate(dir string) error {
 	if err := gitCloneI2PFirefox(dir); err != nil {

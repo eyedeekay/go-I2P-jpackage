@@ -1,12 +1,8 @@
 package I2P
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"embed"
-	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -20,7 +16,9 @@ var Content embed.FS
 
 func Unpack(dir string) error {
 	//untar build.I2P.tar.gz to a directory specified by -dir
-	flag.Parse()
+	if err := SetEnv(dir); err != nil {
+		return err
+	}
 	iname := "build.I2P.tar.gz"
 	fname := "jpackage.I2P.tar.gz"
 	dir, err := filepath.Abs(dir)
@@ -60,68 +58,4 @@ func Unpack(dir string) error {
 
 func UnTarGzip(source, target string) error {
 	return targz.Extract(source, target)
-}
-
-func Untar(tarball, target string) error {
-	reader, err := os.Open(tarball)
-	if err != nil {
-		return fmt.Errorf("Untar: Open() failed %s", err.Error())
-	}
-	defer reader.Close()
-	tarReader := tar.NewReader(reader)
-
-	for {
-		header, err := tarReader.Next()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return fmt.Errorf("Untar: Next() failed %s", err.Error())
-		}
-
-		path := filepath.Join(target, header.Name)
-		info := header.FileInfo()
-		if info.IsDir() {
-			if err = os.MkdirAll(path, info.Mode()); err != nil {
-				return fmt.Errorf("Untar: MkdirAll failed %s", err.Error())
-			}
-			continue
-		}
-
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		log.Println("Untar:", path)
-		defer file.Close()
-		_, err = io.Copy(file, tarReader)
-		if err != nil {
-			return fmt.Errorf("Untar: Copy() failed%s", err.Error())
-		}
-	}
-	return nil
-}
-
-func UnGzip(source, target string) error {
-	reader, err := os.Open(source)
-	if err != nil {
-		return fmt.Errorf("UnGzip: Open() failed %s", err.Error())
-	}
-	defer reader.Close()
-
-	archive, err := gzip.NewReader(reader)
-	if err != nil {
-		return fmt.Errorf("UnGzip: NewReader() failed %s", err.Error())
-	}
-	defer archive.Close()
-
-	target = filepath.Join(target, archive.Name)
-	writer, err := os.Create(target)
-	if err != nil {
-		return fmt.Errorf("UnGzip: Create() failed%s", err.Error())
-	}
-	defer writer.Close()
-
-	_, err = io.Copy(writer, archive)
-	return fmt.Errorf("UnGzip: Copy() failed %s", err.Error())
 }
