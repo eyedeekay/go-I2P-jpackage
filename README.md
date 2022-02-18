@@ -1,7 +1,6 @@
 # go-I2P-jpackage
 
-Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps. 
-
+Embeddable, updatable alternative to NSIS based installer for portable Java I2P apps.
 
 **UNBELIEVABLY Experimental and probably totally unsuitable for use.**
 
@@ -16,7 +15,7 @@ The executable produced by this is a standalone binary that can be built for any
 but it does not support cross-compilation. It is designed to be `go get` able and `import`
 able on any platform supported by Java 17 an Jpackage, but it **REQUIRES** all the same
 build dependencies as `i2p.firefox`. `i2p.firefox` uses `make` for a lot of stuff which
-is obnoxious to use on Windows and totally my fault, and also totally unnecessary. If it 
+is obnoxious to use on Windows and totally my fault, and also totally unnecessary. If it
 turns out to be a non-stupid idea, then I will cut those build dependencies down to just
 `bash`. Because I literally cannot imagine the person who does Go development on Windows
 without at least `git bash` and if I met them, I would probably not like them.
