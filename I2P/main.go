@@ -24,8 +24,7 @@ func main() {
 		log.Println(err)
 		return
 	}
-	err = I2Pdaemon.Start()
-	if err != nil {
+	if err = I2Pdaemon.Start(); err != nil {
 		log.Fatal(err)
 	}
 }

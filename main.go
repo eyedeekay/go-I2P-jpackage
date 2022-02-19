@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	ps "github.com/mitchellh/go-ps"
+	"github.com/mitchellh/go-ps"
 )
 
 type Daemon struct {
@@ -81,22 +81,45 @@ func (d *Daemon) Start() error {
 	}
 }
 
-func (d *Daemon) LookupProcessLinux() (*ps.Process, error) {
+func (d *Daemon) LookupProcessLinux() (*os.Process, error) {
 	if (d.Command) == nil {
-
+		pslist, err := ps.Processes()
+		if err != nil {
+			return nil, err
+		}
+		for _, p := range pslist {
+			if p.Executable() == "I2P" {
+				return os.FindProcess(p.Pid())
+			}
+		}
 	}
 	return d.Command.Process, nil
 }
 
-func (d *Daemon) LookupProcess() (*ps.Process, error) {
+func (d *Daemon) LookupProcessWindows() (*os.Process, error) {
+	if (d.Command) == nil {
+		pslist, err := ps.Processes()
+		if err != nil {
+			return nil, err
+		}
+		for _, p := range pslist {
+			if p.Executable() == "I2P.exe" {
+				return os.FindProcess(p.Pid())
+			}
+		}
+	}
+	return d.Command.Process, nil
+}
+
+func (d *Daemon) LookupProcess() (*os.Process, error) {
 	if err := SetEnv(d.Dir); err != nil {
-		return 0, err
+		return nil, err
 	}
 	switch runtime.GOOS {
 	case "windows":
-		return LookupProcessWindows()
+		return d.LookupProcessWindows()
 	default:
-		return LookupProcessLinux()
+		return d.LookupProcessLinux()
 	}
 }
 
@@ -104,7 +127,14 @@ func (d *Daemon) Stop() error {
 	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
-	return d.Command.Process.Kill()
+	proc, err := d.LookupProcess()
+	if err != nil {
+		return err
+	}
+	if proc != nil {
+		return proc.Kill()
+	}
+	return nil
 }
 
 func SetEnv(dir string) error {
