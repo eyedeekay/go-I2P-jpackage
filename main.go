@@ -8,65 +8,74 @@ import (
 	"runtime"
 )
 
-func LinuxCommand(dir string) (*exec.Cmd, error) {
-	if err := SetEnv(dir); err != nil {
+type Daemon struct {
+	Dir     string
+	Command *exec.Cmd
+}
+
+func (d *Daemon) LinuxCommand() (*exec.Cmd, error) {
+	if err := SetEnv(d.Dir); err != nil {
 		return nil, err
 	}
-	dir, err := filepath.Abs(dir)
+	dir, err := filepath.Abs(d.Dir)
 	if err != nil {
 		return nil, err
 	}
 	execPath := filepath.Join(dir, "I2P", "bin", "I2P")
-	return exec.Command(execPath), nil
+	d.Command = exec.Command(execPath)
+	return d.Command, nil
 }
 
-func RunLinuxCommand(dir string) error {
-	if err := SetEnv(dir); err != nil {
+func (d *Daemon) RunLinuxCommand() error {
+	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
-	cmd, err := LinuxCommand(dir)
+	var err error
+	d.Command, err = d.LinuxCommand()
 	if err != nil {
 		return err
 	}
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	d.Command.Stdout = os.Stdout
+	d.Command.Stderr = os.Stderr
+	return d.Command.Run()
 }
 
-func WindowsCommand(dir string) (*exec.Cmd, error) {
-	if err := SetEnv(dir); err != nil {
+func (d *Daemon) WindowsCommand() (*exec.Cmd, error) {
+	if err := SetEnv(d.Dir); err != nil {
 		return nil, err
 	}
-	dir, err := filepath.Abs(dir)
+	dir, err := filepath.Abs(d.Dir)
 	if err != nil {
 		return nil, err
 	}
 	execPath := filepath.Join(dir, "I2P", "I2P.exe")
-	return exec.Command(execPath), nil
+	d.Command = exec.Command(execPath)
+	return d.Command, nil
 }
 
-func RunWindowsCommand(dir string) error {
-	if err := SetEnv(dir); err != nil {
+func (d *Daemon) RunWindowsCommand() error {
+	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
-	cmd, err := WindowsCommand(dir)
+	var err error
+	d.Command, err = d.WindowsCommand()
 	if err != nil {
 		return err
 	}
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	d.Command.Stdout = os.Stdout
+	d.Command.Stderr = os.Stderr
+	return d.Command.Run()
 }
 
-func RunCommand(dir string) error {
-	if err := SetEnv(dir); err != nil {
+func (d *Daemon) RunCommand() error {
+	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
 	switch runtime.GOOS {
 	case "windows":
-		return RunWindowsCommand(dir)
+		return d.RunWindowsCommand()
 	default:
-		return RunLinuxCommand(dir)
+		return d.RunLinuxCommand()
 	}
 }
 

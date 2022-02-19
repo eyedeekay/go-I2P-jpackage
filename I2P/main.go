@@ -16,21 +16,15 @@ var (
 func main() {
 	flag.Parse()
 	dir, err := filepath.Abs(*dir)
-	if *generate {
-		err := I2P.Generate(dir)
-		if err != nil {
-			log.Fatal(err)
-		}
+	if err != nil {
+		log.Fatal(err)
+	}
+	I2Pdaemon, err := I2P.NewDaemon(dir, *generate)
+	if err != nil {
+		log.Println(err)
 		return
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = I2P.Unpack(dir)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = I2P.RunCommand(dir)
+	err = I2Pdaemon.RunCommand()
 	if err != nil {
 		log.Fatal(err)
 	}

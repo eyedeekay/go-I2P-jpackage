@@ -11,24 +11,24 @@ import (
 	"github.com/mholt/archiver"
 )
 
-//go:embed build.I2P.tar.lz4
+//go:embed build.I2P.tar.xz
 var Content embed.FS
 
-func Unpack(dir string) error {
-	//untar build.I2P.tar.lz4 to a directory specified by -dir
-	if err := SetEnv(dir); err != nil {
+func (d *Daemon) Unpack() error {
+	//untar build.I2P.tar.xz to a directory specified by -dir
+	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
-	iname := "build.I2P.tar.lz4"
-	fname := "jpackage.I2P.tar.lz4"
-	dir, err := filepath.Abs(dir)
+	iname := "build.I2P.tar.xz"
+	fname := "jpackage.I2P.tar.xz"
+	dir, err := filepath.Abs(d.Dir)
 	if err != nil {
 		return fmt.Errorf("Unpack: Abs() failed: %s", err.Error())
 	}
 	os.MkdirAll(dir, 0755)
 	fpath := filepath.Join(dir, fname)
 	//tfpath := filepath.Join(dir, tfname)
-	ufpath := filepath.Join(dir)
+	ufpath := filepath.Join(d.Dir)
 	log.Println("Unpacking", fpath, "to", ufpath)
 	file, err := Content.Open(iname)
 	if err != nil {
@@ -44,7 +44,7 @@ func Unpack(dir string) error {
 	if err != nil {
 		return fmt.Errorf("Unpack: Write() failed: %s", err.Error())
 	}
-	err = UnTarGzip(fpath, ufpath)
+	err = UnTarXzip(fpath, ufpath)
 	if err != nil {
 		return fmt.Errorf("Unpack: UnTarGzip() failed: %s", err.Error())
 	}
@@ -56,11 +56,11 @@ func Unpack(dir string) error {
 	return nil
 }
 
-func UnTarGzip(source, target string) error {
-	tlz4 := archiver.NewTarLz4()
-	tlz4.Tar.OverwriteExisting = true
-	tlz4.Tar.ContinueOnError = true
-	err := tlz4.Unarchive(source, target)
+func UnTarXzip(source, target string) error {
+	txz := archiver.NewTarXz()
+	txz.Tar.OverwriteExisting = true
+	txz.Tar.ContinueOnError = true
+	err := txz.Unarchive(source, target)
 	if err != nil {
 		return fmt.Errorf("TarGzip: Unarchive() failed: %s", err.Error())
 	}
