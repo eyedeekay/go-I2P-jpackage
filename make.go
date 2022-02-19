@@ -12,7 +12,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
-//go:generate ./touch/touch
+//go:generate go run ./touch
 //go:generate go run ./I2P -generate=true -dir=$GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/
 //go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/I2P
 
@@ -49,7 +49,7 @@ func (d *Daemon) gitCloneI2PFirefox() error {
 func (d *Daemon) runI2PFirefoxBuildSh() error {
 	dir := filepath.Join(d.Dir, "i2p.firefox")
 	fmt.Println("Running build.sh")
-	cmd := exec.Command(filepath.Join(dir, "build.sh"))
+	cmd := exec.Command("bash", filepath.Join(dir, "build.sh"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -58,8 +58,8 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 func (d *Daemon) runI2PFirefoxMake() error {
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl make")
-		cmd := exec.Command("wsl", "make", "-C", filepath.Join(d.Dir, "i2p.firefox"))
+		fmt.Println("Running wsl", "make", "-C", "i2p.firefox")
+		cmd := exec.Command("wsl", "make", "-C", "i2p.firefox")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
