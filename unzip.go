@@ -7,11 +7,13 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/mholt/archiver"
 )
 
-//go:embed build.I2P.tar.xz
+//go:embed build.windows.I2P.tar.xz
+//go:embed build.linux.I2P.tar.xz
 var Content embed.FS
 
 func (d *Daemon) Unpack() error {
@@ -19,7 +21,7 @@ func (d *Daemon) Unpack() error {
 	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
-	iname := "build.I2P.tar.xz"
+	iname := "build." + runtime.GOOS + ".I2P.tar.xz"
 	fname := "jpackage.I2P.tar.xz"
 	dir, err := filepath.Abs(d.Dir)
 	if err != nil {

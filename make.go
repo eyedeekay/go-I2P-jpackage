@@ -73,7 +73,7 @@ func (d *Daemon) runI2PFirefoxMake() error {
 }
 
 func (d *Daemon) tarI2PdotFirefoxdotBuild() error {
-	os.Remove(filepath.Join(d.Dir, "build.I2P.tar.xz"))
+	os.Remove(filepath.Join(d.Dir, "build."+runtime.GOOS+".I2P.tar.xz"))
 	err := TarXzip(filepath.Join(d.Dir, "i2p.firefox", "build", "I2P"), filepath.Join(d.Dir, "build."+runtime.GOOS+".I2P.tar.xz"))
 	if err != nil {
 		return fmt.Errorf("tarI2PdotFirefoxdotBuild: Tar failed: %s", err.Error())
