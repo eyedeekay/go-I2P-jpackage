@@ -17,7 +17,6 @@ func main() {
 	} else {
 		os.Remove(filepath.Join(dir, "build.windows.I2P.tar.xz"))
 		ioutil.WriteFile(filepath.Join(dir, "build.windows.I2P.tar.xz"), []byte(""), 0644)
-		return
 	}
 	dir = filepath.Join(build.Default.GOPATH, "src", "github.com", "eyedeekay", "go-I2P-jpackage")
 	if f, err := os.Stat(filepath.Join(dir, "build.linux.I2P.tar.xz")); err == nil {
@@ -28,6 +27,5 @@ func main() {
 	} else {
 		os.Remove(filepath.Join(dir, "build.linux.I2P.tar.xz"))
 		ioutil.WriteFile(filepath.Join(dir, "build.linux.I2P.tar.xz"), []byte(""), 0644)
-		return
 	}
 }
