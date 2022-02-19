@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+
+	ps "github.com/mitchellh/go-ps"
 )
 
 type Daemon struct {
@@ -67,7 +69,7 @@ func (d *Daemon) RunWindowsCommand() error {
 	return d.Command.Run()
 }
 
-func (d *Daemon) RunCommand() error {
+func (d *Daemon) Start() error {
 	if err := SetEnv(d.Dir); err != nil {
 		return err
 	}
@@ -77,6 +79,32 @@ func (d *Daemon) RunCommand() error {
 	default:
 		return d.RunLinuxCommand()
 	}
+}
+
+func (d *Daemon) LookupProcessLinux() (*ps.Process, error) {
+	if (d.Command) == nil {
+
+	}
+	return d.Command.Process, nil
+}
+
+func (d *Daemon) LookupProcess() (*ps.Process, error) {
+	if err := SetEnv(d.Dir); err != nil {
+		return 0, err
+	}
+	switch runtime.GOOS {
+	case "windows":
+		return LookupProcessWindows()
+	default:
+		return LookupProcessLinux()
+	}
+}
+
+func (d *Daemon) Stop() error {
+	if err := SetEnv(d.Dir); err != nil {
+		return err
+	}
+	return d.Command.Process.Kill()
 }
 
 func SetEnv(dir string) error {
