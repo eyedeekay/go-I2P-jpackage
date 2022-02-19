@@ -73,8 +73,8 @@ func runI2PFirefoxMake(dir string) error {
 }
 
 func tarI2PdotFirefoxdotBuild(dir string) error {
-	os.Remove(filepath.Join(dir, "build.I2P.tar.gz"))
-	err := TarGzip(filepath.Join(dir, "i2p.firefox", "build", "I2P"), filepath.Join(dir, "build.I2P.tar.gz"))
+	os.Remove(filepath.Join(dir, "build.I2P.tar.lz4"))
+	err := TarGzip(filepath.Join(dir, "i2p.firefox", "build", "I2P"), filepath.Join(dir, "build.I2P.tar.lz4"))
 	if err != nil {
 		return fmt.Errorf("tarI2PdotFirefoxdotBuild: Tar failed: %s", err.Error())
 	}

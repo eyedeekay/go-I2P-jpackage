@@ -11,16 +11,16 @@ import (
 	"github.com/mholt/archiver"
 )
 
-//go:embed build.I2P.tar.gz
+//go:embed build.I2P.tar.lz4
 var Content embed.FS
 
 func Unpack(dir string) error {
-	//untar build.I2P.tar.gz to a directory specified by -dir
+	//untar build.I2P.tar.lz4 to a directory specified by -dir
 	if err := SetEnv(dir); err != nil {
 		return err
 	}
-	iname := "build.I2P.tar.gz"
-	fname := "jpackage.I2P.tar.gz"
+	iname := "build.I2P.tar.lz4"
+	fname := "jpackage.I2P.tar.lz4"
 	dir, err := filepath.Abs(dir)
 	if err != nil {
 		return fmt.Errorf("Unpack: Abs() failed: %s", err.Error())
@@ -57,10 +57,10 @@ func Unpack(dir string) error {
 }
 
 func UnTarGzip(source, target string) error {
-	tgz := archiver.NewTarGz()
-	tgz.Tar.OverwriteExisting = true
-	tgz.Tar.ContinueOnError = true
-	err := tgz.Unarchive(source, target)
+	tlz4 := archiver.NewTarLz4()
+	tlz4.Tar.OverwriteExisting = true
+	tlz4.Tar.ContinueOnError = true
+	err := tlz4.Unarchive(source, target)
 	if err != nil {
 		return fmt.Errorf("TarGzip: Unarchive() failed: %s", err.Error())
 	}
