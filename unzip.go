@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/walle/targz"
+	"github.com/mholt/archiver"
 )
 
 //go:embed build.I2P.tar.gz
@@ -28,7 +28,7 @@ func Unpack(dir string) error {
 	os.MkdirAll(dir, 0755)
 	fpath := filepath.Join(dir, fname)
 	//tfpath := filepath.Join(dir, tfname)
-	ufpath := filepath.Join(dir, "I2P")
+	ufpath := filepath.Join(dir)
 	log.Println("Unpacking", fpath, "to", ufpath)
 	file, err := Content.Open(iname)
 	if err != nil {
@@ -57,5 +57,12 @@ func Unpack(dir string) error {
 }
 
 func UnTarGzip(source, target string) error {
-	return targz.Extract(source, target)
+	tgz := archiver.NewTarGz()
+	tgz.Tar.OverwriteExisting = true
+	tgz.Tar.ContinueOnError = true
+	err := tgz.Unarchive(source, target)
+	if err != nil {
+		return fmt.Errorf("TarGzip: Unarchive() failed: %s", err.Error())
+	}
+	return nil
 }

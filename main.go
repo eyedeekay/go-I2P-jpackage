@@ -75,7 +75,7 @@ func SetEnv(dir string) error {
 	if err != nil {
 		return fmt.Errorf("SetEnv: os.Setenv failed: %s", err.Error())
 	}
-	err = os.Setenv("I2P_CONFIG", filepath.Join(dir, "I2P", "config"))
+	err = os.Setenv("I2P_CONFIG", filepath.Join(dir, "I2P", "workdir"))
 	if err != nil {
 		return fmt.Errorf("SetEnv: os.Setenv failed: %s", err.Error())
 	}
