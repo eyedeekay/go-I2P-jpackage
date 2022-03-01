@@ -1,0 +1,9 @@
+Embeddedable, Updatable I2P Jpackage for Go and Portables
+=========================================================
+
+This is an experimental piece of software for running an I2P Router without
+any dependencies in a portable manner on Windows and Linux. It turns any Go
+application into a self-contained installer of the Java I2P router, and makes
+the Go application capable of managing the router unpacked by that installer.
+
+It is an experiment and not ready for general use.

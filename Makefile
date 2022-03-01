@@ -6,10 +6,15 @@ clean:
 	git clean -fxd
 	rm -rf i2p.firefox
 
+version: release
+	UPLOAD_OS=linux make upload
+	UPLOAD_OS=windows make upload
+
 USER=eyedeekay
 REPO=go-I2P-jpackage
 TITLE="Java I2P Jpackage(non-go components)"
 UPLOAD_OS?=linux
+VERSION=1.7.0
 
 release:
 	gothub release \
