@@ -12,7 +12,7 @@ version: release
 
 USER=eyedeekay
 REPO=go-I2P-jpackage
-TITLE="Java I2P Jpackage(non-go components)"
+TITLE=Java I2P Jpackage\(non-go components\)
 UPLOAD_OS?=linux
 VERSION=1.7.0
 
@@ -22,8 +22,10 @@ release:
 		--user $(USER) \
 		--repo $(REPO) \
 		--name "$(TITLE) - $(VERSION)" \
-		--description `cat desc` \
+		--description "$(cat desc)" \
 		--tag v$(VERSION); true
+
+SUM=`sha256sum build.$(UPLOAD_OS).I2P.tar.xz`
 
 upload:
 	gothub upload \
@@ -32,5 +34,5 @@ upload:
 		--repo $(REPO) \
 		--tag v$(VERSION) \
 		--name "build.$(UPLOAD_OS).I2P.tar.xz" \
-		--label `sha256sum build.$(UPLOAD_OS).I2P.tar.xz` \
+		--label "$(SUM)" \
 		--file "build.$(UPLOAD_OS).I2P.tar.xz"
