@@ -3,7 +3,7 @@ jpackage:
 	go generate
 
 clean:
-	git clean -fxd
+	git clean -fd
 	rm -rf i2p.firefox
 
 version: release
