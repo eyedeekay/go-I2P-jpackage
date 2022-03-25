@@ -4,7 +4,7 @@ jpackage:
 
 clean:
 	git clean -fd
-	rm -rf i2p.firefox
+	rm -rf i2p.firefox i2p.i2p-jpackage-build
 
 version: release
 	UPLOAD_OS=linux make upload
