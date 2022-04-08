@@ -23,6 +23,9 @@ func (d *Daemon) Generate() error {
 	if err := d.runI2PFirefoxBuildSh(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxBuildSh failed %s", err.Error())
 	}
+	if err := d.runI2PFirefoxExtensions(); err != nil {
+		return fmt.Errorf("generate: runI2PFirefoxExtensions failed %s", err.Error())
+	}
 	if err := d.runI2PFirefoxMake(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxMake failed %s", err.Error())
 	}
@@ -61,6 +64,23 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 		return cmd.Run()
 	default:
 		cmd := exec.Command(filepath.Join(dir, "build.sh"))
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	}
+}
+
+func (d *Daemon) runI2PFirefoxExtensions() error {
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Println("Running wsl", "make", "-C", "i2p.firefox", "extensions")
+		cmd := exec.Command("wsl", "make", "-C", "i2p.firefox", "extensions")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	default:
+		fmt.Println("Running make")
+		cmd := exec.Command("make", "-C", filepath.Join(d.Dir, "i2p.firefox", "extensions"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()

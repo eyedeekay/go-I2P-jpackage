@@ -1,6 +1,6 @@
 
 jpackage:
-	go generate
+	/usr/bin/go generate
 
 clean:
 	git clean -fd
