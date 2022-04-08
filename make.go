@@ -73,14 +73,14 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 func (d *Daemon) runI2PFirefoxExtensions() error {
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl", "make", "-C", "i2p.firefox", "extensions")
-		cmd := exec.Command("wsl", "make", "-C", "i2p.firefox", "extensions")
+		fmt.Println("Running wsl", "make", "extensions", "-C", "i2p.firefox")
+		cmd := exec.Command("wsl", "make", "extensions", "-C", "i2p.firefox" )
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		fmt.Println("Running make")
-		cmd := exec.Command("make", "-C", filepath.Join(d.Dir, "i2p.firefox", "extensions"))
+		fmt.Println("Running make", "extensions", "-C", "i2p.firefox")
+		cmd := exec.Command("make", "extensions", "-C", filepath.Join(d.Dir, "i2p.firefox"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
@@ -96,7 +96,7 @@ func (d *Daemon) runI2PFirefoxMake() error {
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		fmt.Println("Running make")
+		fmt.Println("Running make", "-C", "i2p.firefox")
 		cmd := exec.Command("make", "-C", filepath.Join(d.Dir, "i2p.firefox"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
