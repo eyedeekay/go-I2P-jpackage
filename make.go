@@ -58,12 +58,12 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 		if err != nil {
 			return err
 		}
-		cmd := exec.Command(gitbash, filepath.Join(dir, "daily.sh"))
+		cmd := exec.Command(gitbash, filepath.Join(dir, "unsigned.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		cmd := exec.Command(filepath.Join(dir, "daily.sh"))
+		cmd := exec.Command(filepath.Join(dir, "unsigned.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
