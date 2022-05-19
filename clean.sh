@@ -5,4 +5,4 @@ if [ -f "$HOME/github-release-config.sh" ]; then
 fi
 cd "$HOME/go/src/github.com/eyedeekay/go-I2P-jpackage"
 git pull upstream main
-make jpackage release upload
+make clean

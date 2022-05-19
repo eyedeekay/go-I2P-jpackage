@@ -48,6 +48,7 @@ cd $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage
 finally, add a "replace" directive which refers to the local checkout of go-I2P-jpackage
 to your `go.mod` file and run `go build`. Complete the indicated steps to update your go.sum
 file.
+s
 ## Why? In god's name why would I waste my time on some bullshit like this?
 
 Well. The idea, stupid as it might be, is that everything that imports this package is
