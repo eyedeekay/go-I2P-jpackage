@@ -17,7 +17,7 @@ UPLOAD_OS?=linux
 VERSION=1.7.0-`date +%Y%m%d`
 
 release:
-	gothub release \
+	github-release release \
 		--pre-release \
 		--user $(USER) \
 		--repo $(REPO) \
@@ -28,7 +28,7 @@ release:
 SUM=`sha256sum build.$(UPLOAD_OS).I2P.tar.xz`
 
 upload:
-	gothub upload \
+	github-release upload \
 		--replace \
 		--user $(USER) \
 		--repo $(REPO) \
