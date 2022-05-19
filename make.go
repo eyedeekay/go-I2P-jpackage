@@ -41,7 +41,7 @@ func (d *Daemon) gitCloneI2PFirefox() error {
 		URL:           "https://i2pgit.org/i2p-hackers/i2p.firefox",
 		Progress:      os.Stdout,
 		SingleBranch:  true,
-		ReferenceName: plumbing.NewBranchReferenceName("settable-paths"),
+		ReferenceName: plumbing.NewBranchReferenceName("master"),
 	})
 	if err != nil {
 		log.Printf("gitCloneI2PFirefox: git.PlainClone failed: %s", err.Error())
@@ -74,7 +74,7 @@ func (d *Daemon) runI2PFirefoxExtensions() error {
 	switch runtime.GOOS {
 	case "windows":
 		fmt.Println("Running wsl", "make", "extensions", "-C", "i2p.firefox")
-		cmd := exec.Command("wsl", "make", "extensions", "-C", "i2p.firefox" )
+		cmd := exec.Command("wsl", "make", "extensions", "-C", "i2p.firefox")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
