@@ -51,19 +51,19 @@ func (d *Daemon) gitCloneI2PFirefox() error {
 
 func (d *Daemon) runI2PFirefoxBuildSh() error {
 	dir := filepath.Join(d.Dir, "i2p.firefox")
-	fmt.Println("Running unsigned.sh")
+	fmt.Println("Running build.sh")
 	switch runtime.GOOS {
 	case "windows":
 		gitbash, err := filepath.Abs(filepath.Join("/Program Files/", "/Git/", "git-bash.exe"))
 		if err != nil {
 			return err
 		}
-		cmd := exec.Command(gitbash, filepath.Join(dir, "unsigned.sh"))
+		cmd := exec.Command(gitbash, filepath.Join(dir, "build.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		cmd := exec.Command(filepath.Join(dir, "unsigned.sh"))
+		cmd := exec.Command(filepath.Join(dir, "build.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
