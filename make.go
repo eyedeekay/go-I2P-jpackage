@@ -25,9 +25,9 @@ func (d *Daemon) Generate() error {
 			return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
 		}
 	}
-	/*	if err := d.runI2PFirefoxCleanSh(); err != nil {
+	if err := d.removeI2PJpackageDir(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxCleanSh failed %ss", err.Error())
-	}*/
+	}
 	if err := d.runI2PFirefoxBuildSh(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxBuildSh failed %s", err.Error())
 	}
