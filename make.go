@@ -71,7 +71,7 @@ func (d *Daemon) gitPullI2PFirefox() error {
 	}
 	err = w.Pull(&git.PullOptions{RemoteName: "origin", ReferenceName: plumbing.NewBranchReferenceName("master")})
 	if err != nil {
-		if err.Error() != "already up-to-date" {
+		if err.Error() == "already up-to-date" {
 			log.Printf("gitPullI2PFirefox: w.Pull failed %ss", err.Error())
 			err = nil
 		}
