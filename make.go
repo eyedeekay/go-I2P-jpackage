@@ -74,26 +74,13 @@ func (d *Daemon) gitPullI2PFirefox() error {
 	return nil
 }
 
-func (d *Daemon) runI2PFirefoxCleanSh() error {
-	dir := filepath.Join(d.Dir, "i2p.firefox")
-	fmt.Println("Running clean.sh")
-	args := []string{"--login", "--interactive", filepath.Join(dir, "clean.sh")}
-	switch runtime.GOOS {
-	case "windows":
-		gitbash, err := filepath.Abs(filepath.Join("/Program Files/", "/Git/", "git-bash.exe"))
-		if err != nil {
-			return err
-		}
-		cmd := exec.Command(gitbash, args...)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		return cmd.Run()
-	default:
-		cmd := exec.Command(filepath.Join(dir, "clean.sh"))
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		return cmd.Run()
+func (d *Daemon) removeI2PJpackageDir() error {
+	dir := filepath.Join(d.Dir, "i2p.firefox-jpackage-build")
+	err := os.RemoveAll(dir)
+	if err != nil {
+		return err
 	}
+	return nil
 }
 
 func (d *Daemon) runI2PFirefoxBuildSh() error {
