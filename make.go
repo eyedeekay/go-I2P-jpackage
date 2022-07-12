@@ -22,9 +22,7 @@ func (d *Daemon) Generate() error {
 		return fmt.Errorf("generate: gitCloneI2PFirefox failed %ss", err.Error())
 	}
 	if err := d.gitPullI2PFirefox(); err != nil {
-		if err.Error() != "already up-to-date" {
-			return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
-		}
+		return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
 	}
 	if err := d.setMasterOveride(); err != nil {
 		return fmt.Errorf("generate: setMasterOveride failed %ss", err.Error())
@@ -73,6 +71,10 @@ func (d *Daemon) gitPullI2PFirefox() error {
 	}
 	err = w.Pull(&git.PullOptions{RemoteName: "origin", ReferenceName: plumbing.NewBranchReferenceName("master")})
 	if err != nil {
+		if err.Error() != "already up-to-date" {
+			log.Printf("gitPullI2PFirefox: w.Pull failed %ss", err.Error())
+			err = nil
+		}
 		return err
 	}
 	return nil
