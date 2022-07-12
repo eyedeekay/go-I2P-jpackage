@@ -21,11 +21,13 @@ func (d *Daemon) Generate() error {
 		return fmt.Errorf("generate: gitCloneI2PFirefox failed %ss", err.Error())
 	}
 	if err := d.gitPullI2PFirefox(); err != nil {
-		return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
+		if err.Error() != "already up-to-date" {
+			return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
+		}
 	}
-	if err := d.runI2PFirefoxCleanSh(); err != nil {
+	/*	if err := d.runI2PFirefoxCleanSh(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxCleanSh failed %ss", err.Error())
-	}
+	}*/
 	if err := d.runI2PFirefoxBuildSh(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxBuildSh failed %s", err.Error())
 	}
