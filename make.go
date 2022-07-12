@@ -20,6 +20,12 @@ func (d *Daemon) Generate() error {
 	if err := d.gitCloneI2PFirefox(); err != nil {
 		return fmt.Errorf("generate: gitCloneI2PFirefox failed %ss", err.Error())
 	}
+	if err := d.gitPullI2PFirefox(); err != nil {
+		return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
+	}
+	if err := d.runI2PFirefoxCleanSh(); err != nil {
+		return fmt.Errorf("generate: runI2PFirefoxCleanSh failed %ss", err.Error())
+	}
 	if err := d.runI2PFirefoxBuildSh(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxBuildSh failed %s", err.Error())
 	}
@@ -47,6 +53,45 @@ func (d *Daemon) gitCloneI2PFirefox() error {
 		log.Printf("gitCloneI2PFirefox: git.PlainClone failed: %s", err.Error())
 	}
 	return nil
+}
+
+func (d *Daemon) gitPullI2PFirefox() error {
+	dir := filepath.Join(d.Dir, "i2p.firefox")
+	repo, err := git.PlainOpen(dir)
+	if err != nil {
+		return err
+	}
+	w, err := repo.Worktree()
+	if err != nil {
+		return err
+	}
+	err = w.Pull(&git.PullOptions{RemoteName: "origin", ReferenceName: plumbing.NewBranchReferenceName("master")})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Daemon) runI2PFirefoxCleanSh() error {
+	dir := filepath.Join(d.Dir, "i2p.firefox")
+	fmt.Println("Running clean.sh")
+	args := []string{"--login", "--interactive", filepath.Join(dir, "clean.sh")}
+	switch runtime.GOOS {
+	case "windows":
+		gitbash, err := filepath.Abs(filepath.Join("/Program Files/", "/Git/", "git-bash.exe"))
+		if err != nil {
+			return err
+		}
+		cmd := exec.Command(gitbash, args...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	default:
+		cmd := exec.Command(filepath.Join(dir, "clean.sh"))
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
+	}
 }
 
 func (d *Daemon) runI2PFirefoxBuildSh() error {
@@ -91,14 +136,14 @@ func (d *Daemon) runI2PFirefoxExtensions() error {
 func (d *Daemon) runI2PFirefoxMake() error {
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl", "make", "-C", "i2p.firefox")
-		cmd := exec.Command("wsl", "make", "-C", "i2p.firefox")
+		fmt.Println("Running wsl", "make", "version", "prep", "", "-C", "i2p.firefox")
+		cmd := exec.Command("wsl", "make", "version", "prep", "", "-C", "i2p.firefox")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		fmt.Println("Running make", "-C", "i2p.firefox")
-		cmd := exec.Command("make", "-C", filepath.Join(d.Dir, "i2p.firefox"))
+		fmt.Println("Running make", "version", "prep", "-C", "i2p.firefox")
+		cmd := exec.Command("make", "version", "prep", "-C", filepath.Join(d.Dir, "i2p.firefox"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
