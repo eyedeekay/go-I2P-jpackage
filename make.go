@@ -131,8 +131,8 @@ func (d *Daemon) runI2PFirefoxExtensions() error {
 func (d *Daemon) runI2PFirefoxMake() error {
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl", "make", "version", "prep", "", "-C", "i2p.firefox")
-		cmd := exec.Command("wsl", "make", "version", "prep", "", "-C", "i2p.firefox")
+		fmt.Println("Running wsl", "make", "version", "prep", "-C", "i2p.firefox")
+		cmd := exec.Command("wsl", "make", "version", "prep", "-C", "i2p.firefox")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
