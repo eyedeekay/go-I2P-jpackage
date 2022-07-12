@@ -157,8 +157,8 @@ func (d *Daemon) tarI2PdotFirefoxdotBuild() error {
 func (d *Daemon) setMasterOveride() error {
 	override := `
 	DATE=$(($(date +%s) / 60 / 60 / 24))
-	I2P_VERSION=1.8.0-${DATE}
-	export I2P_VERSION=1.8.0-${DATE}
+	I2P_VERSION=1.8.0.${DATE}
+	export I2P_VERSION=1.8.0.${DATE}
 	VERSION=master
 	export VERSION="$VERSION"
 	`
