@@ -2,6 +2,7 @@ package I2P
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -24,6 +25,9 @@ func (d *Daemon) Generate() error {
 		if err.Error() != "already up-to-date" {
 			return fmt.Errorf("generate: gitPullI2PFirefox failed %ss", err.Error())
 		}
+	}
+	if err := d.setMasterOveride(); err != nil {
+		return fmt.Errorf("generate: setMasterOveride failed %ss", err.Error())
 	}
 	if err := d.removeI2PJpackageDir(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxCleanSh failed %ss", err.Error())
@@ -144,6 +148,20 @@ func (d *Daemon) tarI2PdotFirefoxdotBuild() error {
 	err := TarXzip(filepath.Join(d.Dir, "i2p.firefox", "build", "I2P"), filepath.Join(d.Dir, "build."+runtime.GOOS+".I2P.tar.xz"))
 	if err != nil {
 		return fmt.Errorf("tarI2PdotFirefoxdotBuild: Tar failed: %s", err.Error())
+	}
+	return nil
+}
+
+func (d *Daemon) setMasterOveride() error {
+	override := `
+	I2P_VERSION=1.8.0
+	export I2P_VERSION=1.8.0
+	VERSION=master
+	export VERSION="$VERSION"
+	`
+	err := ioutil.WriteFile(filepath.Join(d.Dir, "i2p.firefox", "i2pversion_override"), []byte(override), 0644)
+	if err != nil {
+		return fmt.Errorf("setMasterOveride: WriteFile failed: %s", err.Error())
 	}
 	return nil
 }
