@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-//go:embed i2p.firefox/license/*
+//go:embed license/*
 var License embed.FS
 
 func GetLicenses() (string, error) {
@@ -14,7 +14,7 @@ func GetLicenses() (string, error) {
 	// return a string of all the files contents combined.
 	// This is used to display the license agreement to the user.
 	var s string
-	licenses, err := License.ReadDir("i2p.firefox/license")
+	licenses, err := License.ReadDir("license")
 	if err != nil {
 		return "", err
 	}
@@ -22,7 +22,7 @@ func GetLicenses() (string, error) {
 		if license.IsDir() {
 			continue
 		}
-		file, err := License.Open("i2p.firefox/license/" + license.Name())
+		file, err := License.Open("license/" + license.Name())
 		if err != nil {
 			continue
 		}
