@@ -12,7 +12,6 @@ import (
 	"github.com/mholt/archiver"
 )
 
-//go:embed build.windows.I2P.tar.xz
 //go:embed build.linux.I2P.tar.xz
 var Content embed.FS
 
