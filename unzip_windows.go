@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/mholt/archiver"
 )
 
 //go:embed build.windows.I2P.tar.xz
