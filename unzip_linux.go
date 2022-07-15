@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/mholt/archiver"
 )
 
 //go:embed build.linux.I2P.tar.xz
@@ -53,17 +51,6 @@ func (d *Daemon) Unpack() error {
 	err = os.Remove(fpath)
 	if err != nil {
 		return fmt.Errorf("Unpack: Remove() failed: %s", err.Error())
-	}
-	return nil
-}
-
-func UnTarXzip(source, target string) error {
-	txz := archiver.NewTarXz()
-	txz.Tar.OverwriteExisting = true
-	txz.Tar.ContinueOnError = true
-	err := txz.Unarchive(source, target)
-	if err != nil {
-		return fmt.Errorf("TarGzip: Unarchive() failed: %s", err.Error())
 	}
 	return nil
 }
