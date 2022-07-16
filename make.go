@@ -40,7 +40,7 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 				// set the key/value pair
 				err := ExportEnv(lineSplit[0], lineSplit[1])
 				if err != nil {
-					return err
+					return fmt.Errorf("readI2PFirefoxConfigSh: error when exporting variables %v", err)
 				}
 				log.Printf("readI2PFirefoxConfigSh: set %s to %s", lineSplit[0], lineSplit[1])
 			}
