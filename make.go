@@ -208,7 +208,7 @@ func (d *Daemon) removeI2PJpackageDir() error {
 func (d *Daemon) runI2PFirefoxBuildSh() error {
 	dir := filepath.Join(d.Dir, "i2p.firefox")
 	fmt.Println("Running build.sh")
-	args := []string{"--login", "--interactive", filepath.Join(dir, "build.sh")}
+	args := []string{"--login", "--init-file=i2p.firefox/config.sh", "--interactive", filepath.Join(dir, "build.sh")}
 	switch runtime.GOOS {
 	case "windows":
 		gitbash, err := filepath.Abs(filepath.Join("/Program Files/", "/Git/", "git-bash.exe"))
@@ -235,7 +235,7 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 func (d *Daemon) runI2PFirefoxCleanSh() error {
 	dir := filepath.Join(d.Dir, "i2p.firefox")
 	fmt.Println("Running clean.sh")
-	args := []string{"--login", "--interactive", filepath.Join(dir, "clean.sh")}
+	args := []string{"--login", "--init-file=i2p.firefox/config.sh", "--interactive", filepath.Join(dir, "clean.sh")}
 	switch runtime.GOOS {
 	case "windows":
 		gitbash, err := filepath.Abs(filepath.Join("/Program Files/", "/Git/", "git-bash.exe"))
