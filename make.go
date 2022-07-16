@@ -78,14 +78,11 @@ func (d *Daemon) readVarConfigSh(key string) string {
 				// read the $PATH environment variable(From Windows)
 				path := os.Getenv("PATH")
 				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
-				log.Println("|", lineSplit[0], "|")
-				log.Println("|", key, "|")
 				if key == lineSplit[0] {
+					log.Println("|", lineSplit[0], "|")
+					log.Println("|", key, "|")
 					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 					val = lineSplit[1]
-					log.Println("readVarConfigSh: k ", lineSplit[0])
-					log.Println("readVarConfigSh: v ", lineSplit[1])
-					log.Println("readVarConfigSh: v2 ", val)
 				}
 			}
 		}
