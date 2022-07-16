@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -16,6 +17,35 @@ import (
 //go:generate go run ./touch
 //go:generate go run ./I2P -generate=true -dir=$GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/
 //go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/I2P
+
+func (d *Daemon) readI2PFirefoxConfigSh() error {
+	configSh, err := ioutil.ReadFile(filepath.Join(d.Dir, "i2p.firefox/config.sh"))
+	if err != nil {
+		return err
+	}
+	// loop through the config file and find the lines that begin with "export..."
+	for _, line := range strings.Split(string(configSh), "\n") {
+		if strings.HasPrefix(line, "export") {
+			// remove the "export" and trim the spaces from the left
+			line = strings.TrimLeft(line, "export")
+			// split the line on the equals sign
+			lineSplit := strings.Split(line, "=")
+			// if the line has an equals sign, then we have a key/value pair
+			if len(lineSplit) == 2 {
+				// read the $PATH environment variable(From Windows)
+				path := os.Getenv("PATH")
+				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
+				lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
+				// set the key/value pair
+				err := os.Setenv(lineSplit[0], lineSplit[1])
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
 
 func (d *Daemon) Generate() error {
 	if err := d.gitCloneI2PFirefox(); err != nil {
@@ -26,6 +56,9 @@ func (d *Daemon) Generate() error {
 	}
 	if err := d.setMasterOveride(); err != nil {
 		return fmt.Errorf("generate: setMasterOveride failed %ss", err.Error())
+	}
+	if err := d.readI2PFirefoxConfigSh(); err != nil {
+		return fmt.Errorf("generate: readI2PFirefoxConfigSh failed %ss", err.Error())
 	}
 	if err := d.removeI2PJpackageDir(); err != nil {
 		return fmt.Errorf("generate: runI2PFirefoxCleanSh failed %ss", err.Error())
