@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -50,13 +51,10 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 	log.Printf("JAVA_HOME: %s", os.Getenv("JAVA_HOME"))
 	log.Printf("ANT_HOME: %s", os.Getenv("ANT_HOME"))
 	log.Printf("\nPlease check that the environment variables above are correct\n")
-	for {
-		fmt.Print("Press enter to continue...")
-		_, err := os.Stdin.Read(make([]byte, 1))
-		if err != nil {
-			return err
-		}
-		break
+	// count down from 10 to 0
+	for i := 10; i >= 0; i-- {
+		log.Printf("Running build in %d seconds, CTRL+C to cancel", i)
+		time.Sleep(1 * time.Second)
 	}
 	return nil
 }
