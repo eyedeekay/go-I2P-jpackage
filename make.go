@@ -59,11 +59,56 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 	return nil
 }
 
+func (d *Daemon) readVarConfigSh(key string) string {
+	configSh, err := ioutil.ReadFile(filepath.Join(d.Dir, "i2p.firefox", "config.sh"))
+	if err != nil {
+		panic(err)
+	}
+	val := ""
+	// loop through the config file and find the lines that begin with "export..."
+	for _, line := range strings.Split(string(configSh), "\n") {
+		if strings.HasPrefix(line, "export") {
+			// remove the "export" and trim the spaces from the left
+			line = strings.TrimLeft(line, "export")
+			// split the line on the equals sign
+			lineSplit := strings.Split(line, "=")
+			// if the line has an equals sign, then we have a key/value pair
+			if len(lineSplit) == 2 {
+				// read the $PATH environment variable(From Windows)
+				path := os.Getenv("PATH")
+				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
+				if key == lineSplit[0] {
+					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
+					val = lineSplit[1]
+				}
+			}
+		}
+	}
+	log.Printf("readVarConfigSh: key %s %s\n", key, val)
+	return key + "=" + val
+}
+
+func (d *Daemon) readJavaHomeFromI2PFirefoxConfigSh() string {
+	return d.readVarConfigSh("JAVA_HOME")
+}
+
+func (d *Daemon) readPathFromI2PFirefoxConfigSh() string {
+	return d.readVarConfigSh("PATH")
+}
+
+func (d *Daemon) readAntHomeFromI2PFirefoxConfigSh() string {
+	return d.readVarConfigSh("ANT_HOME")
+}
+
 // Run
 // This is a windows-only workaround, if we're not on windows just call Setenv instead
 func ExportEnv(key, value string) error {
 	if runtime.GOOS != "windows" {
 		return os.Setenv(key, value)
+	}
+	err := os.Setenv(key, value)
+	if err != nil {
+		return err
 	}
 	str, err := exec.Command("SETX", key, value).CombinedOutput()
 	if err != nil {
@@ -162,7 +207,7 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
-		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
 		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
 		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
 		cmd.Dir = dir
@@ -189,7 +234,7 @@ func (d *Daemon) runI2PFirefoxCleanSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
-		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
 		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
 		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
 		cmd.Dir = dir
@@ -211,7 +256,7 @@ func (d *Daemon) runI2PFirefoxExtensions() error {
 	case "windows":
 		fmt.Println("Running wsl", "make", "extensions")
 		cmd := exec.Command("wsl", "make", "extensions")
-		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
 		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
 		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
 		cmd.Dir = dir
@@ -234,7 +279,7 @@ func (d *Daemon) runI2PFirefoxMake() error {
 	case "windows":
 		fmt.Println("Running wsl", "make", "version", "prep")
 		cmd := exec.Command("wsl", "make", "version", "prep")
-		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
 		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
 		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
 		cmd.Dir = dir
