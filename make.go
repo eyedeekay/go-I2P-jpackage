@@ -20,7 +20,7 @@ import (
 //go:generate go build -o $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/go-I2P-jpackage $GOPATH/src/github.com/eyedeekay/go-I2P-jpackage/I2P
 
 func (d *Daemon) readI2PFirefoxConfigSh() error {
-	configSh, err := ioutil.ReadFile(filepath.Join(d.Dir, "i2p.firefox/config.sh"))
+	configSh, err := ioutil.ReadFile(filepath.Join(d.Dir, "i2p.firefox", "config.sh"))
 	if err != nil {
 		return err
 	}
