@@ -150,6 +150,10 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
+		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
+		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
+		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
@@ -157,6 +161,7 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 		cmd := exec.Command(filepath.Join(dir, "build.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		cmd.Dir = dir
 		return cmd.Run()
 	}
 }
@@ -172,6 +177,10 @@ func (d *Daemon) runI2PFirefoxCleanSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
+		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
+		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
+		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
@@ -179,40 +188,53 @@ func (d *Daemon) runI2PFirefoxCleanSh() error {
 		cmd := exec.Command(filepath.Join(dir, "clean.sh"))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		cmd.Dir = dir
 		return cmd.Run()
 	}
 }
 
 func (d *Daemon) runI2PFirefoxExtensions() error {
+	dir := filepath.Join(d.Dir, "i2p.firefox")
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl", "make", "extensions", "-C", "i2p.firefox")
-		cmd := exec.Command("wsl", "make", "extensions", "-C", "i2p.firefox")
+		fmt.Println("Running wsl", "make", "extensions")
+		cmd := exec.Command("wsl", "make", "extensions")
+		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
+		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
+		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		fmt.Println("Running make", "extensions", "-C", "i2p.firefox")
-		cmd := exec.Command("make", "extensions", "-C", filepath.Join(d.Dir, "i2p.firefox"))
+		fmt.Println("Running make", "extensions")
+		cmd := exec.Command("make", "extensions")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		cmd.Dir = dir
 		return cmd.Run()
 	}
 }
 
 func (d *Daemon) runI2PFirefoxMake() error {
+	dir := filepath.Join(d.Dir, "i2p.firefox")
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Running wsl", "make", "version", "prep", "-C", "i2p.firefox")
-		cmd := exec.Command("wsl", "make", "version", "prep", "-C", "i2p.firefox")
+		fmt.Println("Running wsl", "make", "version", "prep")
+		cmd := exec.Command("wsl", "make", "version", "prep")
+		cmd.Env = append(os.Environ(), "JAVA_HOME="+os.Getenv("JAVA_HOME"))
+		cmd.Env = append(os.Environ(), "ANT_HOME="+os.Getenv("ANT_HOME"))
+		cmd.Env = append(os.Environ(), "PATH="+os.Getenv("PATH"))
+		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	default:
-		fmt.Println("Running make", "version", "prep", "-C", "i2p.firefox")
-		cmd := exec.Command("make", "version", "prep", "-C", filepath.Join(d.Dir, "i2p.firefox"))
+		fmt.Println("Running make", "version", "prep")
+		cmd := exec.Command("make", "version", "prep")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		cmd.Dir = dir
 		return cmd.Run()
 	}
 }
