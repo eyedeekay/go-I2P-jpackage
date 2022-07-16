@@ -81,8 +81,8 @@ func (d *Daemon) readVarConfigSh(key string) string {
 				if key == lineSplit[0] {
 					log.Println("|", lineSplit[0], "|")
 					log.Println("|", key, "|")
-					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
-					val = lineSplit[1]
+					//lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
+					val += strings.Replace(lineSplit[1], "$PATH", path, -1)
 				}
 			}
 		}
