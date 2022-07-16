@@ -1,5 +1,5 @@
 
-jpackage:
+jpackage: clean
 	go generate
 
 clean:
@@ -14,7 +14,10 @@ USER=eyedeekay
 REPO=go-I2P-jpackage
 TITLE=Java I2P Jpackage\(non-go components\)
 UPLOAD_OS?=linux
-VERSION=1.7.0-`date +%Y%m%d`
+VERSION=1.8.0-`bash -c "echo $$(($$(date +%s) / 60 / 60 / 24))"`
+
+echo:
+	echo $(VERSION)
 
 release:
 	github-release release \
