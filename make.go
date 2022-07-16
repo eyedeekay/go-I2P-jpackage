@@ -70,6 +70,7 @@ func (d *Daemon) readVarConfigSh(key string) string {
 		if strings.HasPrefix(line, "export") {
 			// remove the "export" and trim the spaces from the left
 			line = strings.TrimLeft(line, "export")
+			line = strings.TrimSpace(line)
 			// split the line on the equals sign
 			lineSplit := strings.Split(line, "=")
 			// if the line has an equals sign, then we have a key/value pair
