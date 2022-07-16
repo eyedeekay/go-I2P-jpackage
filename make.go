@@ -41,6 +41,7 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 				if err != nil {
 					return err
 				}
+				log.Printf("readI2PFirefoxConfigSh: set %s to %s", lineSplit[0], lineSplit[1])
 			}
 		}
 	}
