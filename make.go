@@ -83,10 +83,10 @@ func (d *Daemon) readVarConfigSh(key string) string {
 				if key == lineSplit[0] {
 					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 					val = lineSplit[1]
+					log.Println("readVarConfigSh: k ", lineSplit[0])
+					log.Println("readVarConfigSh: v ", lineSplit[1])
+					log.Println("readVarConfigSh: v2 ", val)
 				}
-				log.Println("readVarConfigSh: k ", lineSplit[0])
-				log.Println("readVarConfigSh: v ", lineSplit[1])
-				log.Println("readVarConfigSh: v2 ", val)
 			}
 		}
 	}
