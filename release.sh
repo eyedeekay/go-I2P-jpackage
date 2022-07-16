@@ -16,6 +16,7 @@ case "${unameOut}" in
 esac
 echo ${machine}
 
+. i2p.firefox/config.sh
 
 make jpackage release 
 sleep 2s
