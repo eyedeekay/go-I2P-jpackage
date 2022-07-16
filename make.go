@@ -81,7 +81,9 @@ func (d *Daemon) readVarConfigSh(key string) string {
 					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 					val = lineSplit[1]
 				}
-				log.Println("readVarConfigSh: ", lineSplit[0], lineSplit[1], val)
+				log.Println("readVarConfigSh: ", lineSplit[0])
+				log.Println("readVarConfigSh: ", lineSplit[1])
+				log.Println("readVarConfigSh: ", val)
 			}
 		}
 	}
