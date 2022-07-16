@@ -69,6 +69,10 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
+	str, err = exec.Command("export", key, value).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ExportEnv: %s", err)
+	}
 	log.Printf("ExportEnv: \t%s", str)
 	return err
 }
