@@ -38,7 +38,7 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
 				lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 				// set the key/value pair
-				err := os.Setenv(lineSplit[0], lineSplit[1])
+				err := ExportEnv(lineSplit[0], lineSplit[1])
 				if err != nil {
 					return err
 				}
@@ -57,6 +57,15 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 		time.Sleep(1 * time.Second)
 	}
 	return nil
+}
+
+// Run
+// This is a windows-only workaround, if we're not on windows just call Setenv instead
+func ExportEnv(key, value string) error {
+	if runtime.GOOS != "windows" {
+		return os.Setenv(key, value)
+	}
+	return exec.Command("SETX", key, value, "/M").Run()
 }
 
 func (d *Daemon) Generate() error {
