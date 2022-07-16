@@ -81,9 +81,9 @@ func (d *Daemon) readVarConfigSh(key string) string {
 					lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 					val = lineSplit[1]
 				}
-				log.Println("readVarConfigSh: ", lineSplit[0])
-				log.Println("readVarConfigSh: ", lineSplit[1])
-				log.Println("readVarConfigSh: ", val)
+				log.Println("readVarConfigSh: k ", lineSplit[0])
+				log.Println("readVarConfigSh: v ", lineSplit[1])
+				log.Println("readVarConfigSh: v2 ", val)
 			}
 		}
 	}
@@ -210,9 +210,9 @@ func (d *Daemon) runI2PFirefoxBuildSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
-		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readAntHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readPathFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readJavaHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readAntHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readPathFromI2PFirefoxConfigSh())
 		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -237,9 +237,9 @@ func (d *Daemon) runI2PFirefoxCleanSh() error {
 			return err
 		}
 		cmd := exec.Command(gitbash, args...)
-		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readAntHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readPathFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readJavaHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readAntHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readPathFromI2PFirefoxConfigSh())
 		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -259,9 +259,9 @@ func (d *Daemon) runI2PFirefoxExtensions() error {
 	case "windows":
 		fmt.Println("Running wsl", "make", "extensions")
 		cmd := exec.Command("wsl", "make", "extensions")
-		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readAntHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readPathFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readJavaHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readAntHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readPathFromI2PFirefoxConfigSh())
 		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -282,9 +282,9 @@ func (d *Daemon) runI2PFirefoxMake() error {
 	case "windows":
 		fmt.Println("Running wsl", "make", "version", "prep")
 		cmd := exec.Command("wsl", "make", "version", "prep")
-		cmd.Env = append(os.Environ(), d.readJavaHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readAntHomeFromI2PFirefoxConfigSh())
-		cmd.Env = append(os.Environ(), d.readPathFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readJavaHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readAntHomeFromI2PFirefoxConfigSh())
+		cmd.Env = append(cmd.Env, d.readPathFromI2PFirefoxConfigSh())
 		cmd.Dir = dir
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
