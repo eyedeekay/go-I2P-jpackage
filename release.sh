@@ -17,4 +17,6 @@ esac
 echo ${machine}
 
 
-make jpackage release upload
+make jpackage release 
+sleep 2s
+make upload
