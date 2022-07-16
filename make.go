@@ -65,7 +65,12 @@ func ExportEnv(key, value string) error {
 	if runtime.GOOS != "windows" {
 		return os.Setenv(key, value)
 	}
-	return exec.Command("SETX", key, value, "/M").Run()
+	str, err := exec.Command("SETX", key, value, "/M").CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ExportEnv: %s", err)
+	}
+	log.Printf("ExportEnv: \t%s", str)
+	return err
 }
 
 func (d *Daemon) Generate() error {
