@@ -1,5 +1,5 @@
 
-jpackage: clean
+jpackage:
 	go generate
 
 clean:
