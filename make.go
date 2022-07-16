@@ -113,7 +113,7 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return err
 	}
-	str, err := exec.Command("set", key, value).CombinedOutput()
+	str, err := exec.Command("cmd.exe", "/C", "set", key, value).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
