@@ -44,6 +44,11 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 			}
 		}
 	}
+	// print out the PATH, JAVA_HOME, and ANT_HOME environment variables
+	log.Printf("PATH: %s", os.Getenv("PATH"))
+	log.Printf("JAVA_HOME: %s", os.Getenv("JAVA_HOME"))
+	log.Printf("ANT_HOME: %s", os.Getenv("ANT_HOME"))
+	log.Printf("\nPlease check that the environment variables above are correct\n")
 	return nil
 }
 
