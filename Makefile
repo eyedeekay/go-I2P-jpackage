@@ -10,6 +10,8 @@ version: release
 	UPLOAD_OS=linux make upload
 	UPLOAD_OS=windows make upload
 
+-include i2p.firefox/config.sh
+
 USER=eyedeekay
 REPO=go-I2P-jpackage
 TITLE=Java I2P Jpackage\(non-go components\)
