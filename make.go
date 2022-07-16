@@ -79,15 +79,13 @@ func (d *Daemon) readVarConfigSh(key string) string {
 				path := os.Getenv("PATH")
 				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
 				if key == lineSplit[0] {
-					log.Println("|", lineSplit[0], "|")
-					log.Println("|", key, "|")
 					//lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 					val += strings.Replace(lineSplit[1], "$PATH", path, -1)
 				}
 			}
 		}
 	}
-	log.Printf("readVarConfigSh: key %s value %s\n", key, val)
+	log.Printf("%s=%s\n", key, val)
 	return key + "=" + val
 }
 
@@ -118,6 +116,10 @@ func ExportEnv(key, value string) error {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
 	str, err = exec.Command("SETX", key, value).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ExportEnv: %s", err)
+	}
+	str, err = exec.Command("cmd.exe", "/C", "SETX", key, value).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
