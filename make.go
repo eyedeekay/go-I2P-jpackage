@@ -116,27 +116,28 @@ func ExportEnv(key, value string) error {
 	value = WindowsIfyPath(value)
 	str, err := exec.Command("cmd.exe", "/C", "set", key+"="+value).CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("ExportEnv: %s", err)
+		return fmt.Errorf("ExportEnv: cmd.exe /C set %s", err)
 	}
 	str, err = exec.Command("setx", key+"="+value).CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("ExportEnv: %s", err)
+		return fmt.Errorf("ExportEnv: setx %s", err)
 	}
 	str, err = exec.Command("SETX", key, value).CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("ExportEnv: %s", err)
+		return fmt.Errorf("ExportEnv: SETX %s", err)
 	}
 	str, err = exec.Command("cmd.exe", "/C", "SETX", key, value).CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("ExportEnv: %s", err)
+		return fmt.Errorf("ExportEnv: cmd.exe /C SETX %s", err)
 	}
 	sts := `[System.Environment]::SetEnvironmentVariable("` + key + `", $Env:` + key + ` + ";` + value + `'", [System.EnvironmentVariableTarget]::User)`
 	err, stv, errout := gosh.PowershellOutput(sts)
 	if err != nil {
-		return fmt.Errorf("ExportEnv: %s", err)
+		log.Println("ExportEnv: gosh.PowershellOutput:", errout)
+		return fmt.Errorf("ExportEnv: PowerShell 1 %s", err)
 	}
 	if errout != "" {
-		return fmt.Errorf("ExportEnv: %s", errout)
+		return fmt.Errorf("ExportEnv: PowerShell 2 %s", errout)
 	}
 	log.Printf("ExportEnv: \t%s\n\t%s", str, stv)
 	return err
