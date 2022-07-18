@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	//gosh "github.com/abdfnx/shell"
+	"github.com/abdfnx/gosh"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 )
@@ -116,7 +118,7 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
-	str, err = exec.Command("set", key+"="+value).CombinedOutput()
+	str, err = exec.Command("setx", key+"="+value).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
@@ -128,11 +130,15 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
-	str, err = exec.Command("$Env:"+key, "+=", "\";").CombinedOutput()
+	sts := `[System.Environment]::SetEnvironmentVariable("Path", $Env:` + key + " += \";" + value + `, [System.EnvironmentVariableTarget]::User)`
+	err, stv, errout := gosh.PowershellOutput(sts)
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
-	log.Printf("ExportEnv: \t%s", str)
+	if errout != "" {
+		return fmt.Errorf("ExportEnv: %s", errout)
+	}
+	log.Printf("ExportEnv: \t%s\n\t%s", str, stv)
 	return err
 }
 
