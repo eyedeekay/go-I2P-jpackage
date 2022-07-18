@@ -111,7 +111,12 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return err
 	}
+	value = WindowsIfyPath(value)
 	str, err := exec.Command("cmd.exe", "/C", "set", key+"="+value).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ExportEnv: %s", err)
+	}
+	str, err = exec.Command("set", key+"="+value).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
@@ -123,8 +128,20 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return fmt.Errorf("ExportEnv: %s", err)
 	}
+	str, err = exec.Command("$Env:"+key, "+=", "\";").CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ExportEnv: %s", err)
+	}
 	log.Printf("ExportEnv: \t%s", str)
 	return err
+}
+
+// WindowsIfyPath Replaces the first /c/ with a c:\ and the separator slash with a backslash
+func WindowsIfyPath(path string) string {
+	if runtime.GOOS != "windows" {
+		return path
+	}
+	return strings.Replace(strings.Replace(path, "/c/", "c:\\", 1), "/", "\\", -1)
 }
 
 func (d *Daemon) Generate() error {
