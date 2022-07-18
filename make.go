@@ -130,7 +130,7 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return fmt.Errorf("ExportEnv: cmd.exe /C SETX %s", err)
 	}
-	sts := `[System.Environment]::SetEnvironmentVariable("` + key + `", $Env:` + key + ` + ";` + value + `'", [System.EnvironmentVariableTarget]::User)`
+	sts := fmt.Sprintf(`[System.Environment]::SetEnvironmentVariable("%s", $Env:%s + ";%s'", [System.EnvironmentVariableTarget]::User)`, key, key, value)
 	err, stv, errout := gosh.PowershellOutput(sts)
 	if err != nil {
 		log.Println("ExportEnv: gosh.PowershellOutput:", errout)
