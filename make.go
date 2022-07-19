@@ -40,11 +40,11 @@ func (d *Daemon) readI2PFirefoxConfigSh() error {
 				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
 				lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
 				// set the key/value pair
-				err := ExportEnv(lineSplit[0], lineSplit[1])
+				val, err := ExportEnv(lineSplit[0], lineSplit[1])
 				if err != nil {
 					return fmt.Errorf("readI2PFirefoxConfigSh: error when exporting variables %v", err)
 				}
-				log.Printf("readI2PFirefoxConfigSh: set %s to %s", lineSplit[0], lineSplit[1])
+				log.Printf("readI2PFirefoxConfigSh: set %s to %s", lineSplit[0], val)
 			}
 		}
 	}
@@ -104,14 +104,13 @@ func (d *Daemon) readAntHomeFromI2PFirefoxConfigSh() string {
 
 // Run
 // This is a windows-only workaround, if we're not on windows just call Setenv instead
-func ExportEnv(key, value string) error {
+func ExportEnv(key, value string) (string, error) {
 	if runtime.GOOS != "windows" {
-		setEnv(key, value)
+		return value, setEnv(key, value)
 	}
 	bashvalue := BashIfyPath(value)
 	// possibly extra stuff for Windows here
-	setEnv(key, bashvalue)
-	return nil
+	return bashvalue, setEnv(key, bashvalue)
 }
 
 func setEnv(key, value string) error {
