@@ -131,7 +131,23 @@ func BashIfyPath(path string) string {
 	if runtime.GOOS != "windows" {
 		return path
 	}
-	return strings.Replace(strings.Replace(path, "c:\\", "/c/", 1), "\\", "/", -1)
+	return strings.Replace(
+		strings.Replace(
+			strings.Replace(
+				path,
+				"c:\\",
+				"/c/",
+				-1,
+			),
+
+			"C:\\",
+			"/c/",
+			-1,
+		),
+		"\\",
+		"/",
+		-1,
+	)
 }
 
 func (d *Daemon) Generate() error {
