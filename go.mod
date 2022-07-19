@@ -8,7 +8,6 @@ require (
 )
 
 require (
-	github.com/abdfnx/gosh v0.3.16-0.20220426102904-fe69f723b67f
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect

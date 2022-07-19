@@ -12,7 +12,7 @@ import (
 	"time"
 
 	//gosh "github.com/abdfnx/shell"
-	"github.com/abdfnx/gosh"
+
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 )
@@ -109,37 +109,12 @@ func ExportEnv(key, value string) error {
 	if runtime.GOOS != "windows" {
 		return os.Setenv(key, value)
 	}
+	// possibly extra stuff for Windows here
 	err := os.Setenv(key, value)
 	if err != nil {
 		return err
 	}
-	value = WindowsIfyPath(value)
-	str, err := exec.Command("cmd.exe", "/C", "set", key+"="+value).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("ExportEnv: cmd.exe /C set %s", err)
-	}
-	str, err = exec.Command("SETX", key, value).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("ExportEnv: SETX %s", err)
-	}
-	str, err = exec.Command("cmd.exe", "/C", "SETX", key, value).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("ExportEnv: cmd.exe /C SETX %s", err)
-	}
-	//sts := fmt.Sprintf(`[System.Environment]::SetEnvironmentVariable("%s", $Env:%s + ";%s'", [System.EnvironmentVariableTarget]::User)`, key, key, value)
-	sts := fmt.Sprintf(`
-$env:%s += %s
-`, key, value)
-	err, stv, errout := gosh.PowershellOutput(sts)
-	if err != nil {
-		log.Println("ExportEnv: gosh.PowershellOutput:", errout)
-		return fmt.Errorf("ExportEnv: PowerShell 1 %s", err)
-	}
-	if errout != "" {
-		return fmt.Errorf("ExportEnv: PowerShell 2 %s", errout)
-	}
-	log.Printf("ExportEnv: \t%s\n\t%s", str, stv)
-	return err
+	return nil
 }
 
 // WindowsIfyPath Replaces the first /c/ with a c:\ and the separator slash with a backslash
