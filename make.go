@@ -109,8 +109,9 @@ func ExportEnv(key, value string) error {
 	if runtime.GOOS != "windows" {
 		return os.Setenv(key, value)
 	}
+	bashvalue := BashIfyPath(value)
 	// possibly extra stuff for Windows here
-	err := os.Setenv(key, value)
+	err := os.Setenv(key, bashvalue)
 	if err != nil {
 		return err
 	}
@@ -122,7 +123,15 @@ func WindowsIfyPath(path string) string {
 	if runtime.GOOS != "windows" {
 		return path
 	}
-	return strings.Replace(strings.Replace(path, "/c/", "c:\\", 1), "/", "\\", -1)
+	return strings.Replace(strings.Replace(path, "/c/", "c:\\", -1), "/", "\\", -1)
+}
+
+// BashIfyPath replaces the c:\ with /c/ and the separator backslash with a slash
+func BashIfyPath(path string) string {
+	if runtime.GOOS != "windows" {
+		return path
+	}
+	return strings.Replace(strings.Replace(path, "c:\\", "/c/", 1), "\\", "/", -1)
 }
 
 func (d *Daemon) Generate() error {
