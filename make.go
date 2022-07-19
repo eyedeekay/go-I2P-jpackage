@@ -106,16 +106,17 @@ func (d *Daemon) readAntHomeFromI2PFirefoxConfigSh() string {
 // This is a windows-only workaround, if we're not on windows just call Setenv instead
 func ExportEnv(key, value string) error {
 	if runtime.GOOS != "windows" {
-		return os.Setenv(key, value)
+		setEnv(key, value)
 	}
 	bashvalue := BashIfyPath(value)
 	// possibly extra stuff for Windows here
-	err := os.Setenv(key, bashvalue)
-	if err != nil {
-		return err
-	}
-	log.Printf("%s=%s\n", key, value)
+	setEnv(key, bashvalue)
 	return nil
+}
+
+func setEnv(key, value string) error {
+	log.Printf("%s=%s\n", key, value)
+	return os.Setenv(key, value)
 }
 
 // WindowsIfyPath Replaces the first /c/ with a c:\ and the separator slash with a backslash
@@ -139,7 +140,6 @@ func BashIfyPath(path string) string {
 				"/c/",
 				-1,
 			),
-
 			"C:\\",
 			"/c/",
 			-1,
