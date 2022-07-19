@@ -115,7 +115,7 @@ func ExportEnv(key, value string) error {
 }
 
 func setEnv(key, value string) error {
-	log.Printf("%s=%s\n", key, value)
+	log.Printf("Set environment variable: %s=%s\n", key, value)
 	return os.Setenv(key, value)
 }
 
