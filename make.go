@@ -78,7 +78,7 @@ func (d *Daemon) readVarConfigSh(key string) string {
 			// if the line has an equals sign, then we have a key/value pair
 			if len(lineSplit) == 2 {
 				// read the $PATH environment variable(From Windows)
-				path := os.Getenv("PATH")
+				path := BashIfyPath(os.Getenv("PATH"))
 				// replace all instances of $PATH with the value of the PATH environment variable in lineSplit[1]
 				if key == lineSplit[0] {
 					//lineSplit[1] = strings.Replace(lineSplit[1], "$PATH", path, -1)
