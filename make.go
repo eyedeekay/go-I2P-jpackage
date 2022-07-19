@@ -87,7 +87,6 @@ func (d *Daemon) readVarConfigSh(key string) string {
 			}
 		}
 	}
-	log.Printf("%s=%s\n", key, val)
 	return key + "=" + val
 }
 
@@ -115,6 +114,7 @@ func ExportEnv(key, value string) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("%s=%s\n", key, value)
 	return nil
 }
 
